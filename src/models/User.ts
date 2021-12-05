@@ -11,7 +11,7 @@ export interface IUser extends Document {
   refreshToken: string;
 }
 
-const UserSchema = new Schema(
+const UserSchema = new Schema<IUser>(
   {
     username: {
       type: String,
