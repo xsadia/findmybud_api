@@ -1,11 +1,11 @@
 import {
-  GraphQLList,
   GraphQLNonNull,
   GraphQLObjectType,
   GraphQLString,
 } from "graphql";
+import { connectionArgs, connectionFromArray, fromGlobalId } from "graphql-relay";
 import { IUser, User } from "../../models/User";
-import { UserType } from "../user/UserType";
+import { UserConnection, UserType } from "../user/UserType";
 
 export const QueryType = new GraphQLObjectType({
   name: "Query",
@@ -16,10 +16,12 @@ export const QueryType = new GraphQLObjectType({
       resolve: () => "Healthy",
     },
     users: {
-      type: new GraphQLList(UserType),
-      resolve: async (): Promise<Array<IUser>> => {
+      type: UserConnection,
+      args: connectionArgs,
+      resolve: async (root, args, ctx) => {
         const users = await User.find();
-        return users;
+
+        return connectionFromArray(users, args);
       },
     },
     userById: {
@@ -30,7 +32,8 @@ export const QueryType = new GraphQLObjectType({
         },
       },
       resolve: async (root, args, ctx): Promise<IUser | null> => {
-        const user = await User.findOne({ _id: args.id });
+        const { id } = fromGlobalId(args.id);
+        const user = await User.findOne({ _id: id });
         if (!user) {
           return null;
         }
