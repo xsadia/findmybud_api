@@ -1,40 +1,47 @@
-import { GraphQLID, GraphQLObjectType, GraphQLString } from "graphql";
+import { GraphQLObjectType, GraphQLString } from "graphql";
+import { connectionDefinitions, globalIdField } from "graphql-relay";
+import { nodeInterface } from "../node/nodeDefinition";
 
 export const UserType = new GraphQLObjectType({
   name: "User",
   description: "User type",
   fields: () => ({
-    id: {
-      type: GraphQLID,
-      resolve: (user) => user.id,
-    },
+    id: globalIdField("User"),
     username: {
       type: GraphQLString,
-      resolve: (user) => user.username,
+      resolve: ({ username }) => username,
     },
     email: {
       type: GraphQLString,
-      resolve: (user) => user.email,
+      resolve: ({ email }) => email,
     },
     password: {
       type: GraphQLString,
-      resolve: (user) => user.password,
+      resolve: ({ password }) => password,
     },
     bio: {
       type: GraphQLString,
-      resolve: (user) => user.bio,
+      resolve: ({ bio }) => bio,
     },
     refreshToken: {
       type: GraphQLString,
-      resolve: (user) => user.refreshToken,
+      resolve: ({ refreshToken }) => refreshToken,
     },
     createdAt: {
       type: GraphQLString,
-      resolve: (user) => user.createdAt,
+      resolve: ({ createdAt }) => createdAt,
     },
     updatedAt: {
       type: GraphQLString,
-      resolve: (user) => user.updatedAt,
+      resolve: ({ updatedAt }) => updatedAt,
     },
   }),
+  interfaces: () => [nodeInterface]
 });
+
+const { connectionType: UserConnection, edgeType: UserEdge } = connectionDefinitions({
+  name: "User",
+  nodeType: UserType
+});
+
+export { UserConnection, UserEdge };
