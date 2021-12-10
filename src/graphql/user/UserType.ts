@@ -36,12 +36,13 @@ export const UserType = new GraphQLObjectType({
       resolve: ({ updatedAt }) => updatedAt,
     },
   }),
-  interfaces: () => [nodeInterface]
+  interfaces: () => [nodeInterface],
 });
 
-const { connectionType: UserConnection, edgeType: UserEdge } = connectionDefinitions({
-  name: "User",
-  nodeType: UserType
-});
+const { connectionType: UserConnection, edgeType: UserEdge } =
+  connectionDefinitions({
+    name: "User",
+    nodeType: UserType,
+  });
 
 export { UserConnection, UserEdge };
