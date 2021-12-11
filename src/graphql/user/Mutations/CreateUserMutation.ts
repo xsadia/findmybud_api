@@ -19,14 +19,12 @@ export default mutationWithClientMutationId({
 
     if (emailExists) {
       return { id: null, token: null, error: "E-mail already in use" };
-      //throw new Error("E-mail already in use");
     }
 
     const usernameExists = await User.findOne({ username });
 
     if (usernameExists) {
       return { id: null, token: null, error: "Username already in use" };
-      //throw new Error("Username already in use");
     }
 
     const hashedPassword = await hash(password, 8);
@@ -49,7 +47,6 @@ export default mutationWithClientMutationId({
     return {
       id: user._id,
       token,
-      success: "User registered with success!",
       error: null,
     };
   },
