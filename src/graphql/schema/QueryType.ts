@@ -1,10 +1,12 @@
+import { GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
 import {
-  GraphQLNonNull,
-  GraphQLObjectType,
-  GraphQLString,
-} from "graphql";
-import { connectionArgs, connectionFromArray, fromGlobalId } from "graphql-relay";
+  connectionArgs,
+  connectionFromArray,
+  fromGlobalId,
+} from "graphql-relay";
+import { Post } from "../../models/Post";
 import { IUser, User } from "../../models/User";
+import { PostConnection } from "../post/PostType";
 import { UserConnection, UserType } from "../user/UserType";
 
 export const QueryType = new GraphQLObjectType({
@@ -38,6 +40,15 @@ export const QueryType = new GraphQLObjectType({
           return null;
         }
         return user;
+      },
+    },
+    posts: {
+      type: PostConnection,
+      args: connectionArgs,
+      resolve: async (root, args, ctx) => {
+        const posts = await Post.find();
+
+        return connectionFromArray(posts, args);
       },
     },
   }),
