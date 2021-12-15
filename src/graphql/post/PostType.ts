@@ -9,7 +9,7 @@ import { User } from "../../models/User";
 import { nodeInterface } from "../node/nodeDefinition";
 import { UserConnection, UserType } from "../user/UserType";
 
-const PostTypeEnum = new GraphQLEnumType({
+export const PostTypeEnum = new GraphQLEnumType({
   name: "post types",
   values: {
     FOUND: { value: "found" },

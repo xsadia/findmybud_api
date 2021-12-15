@@ -3,7 +3,8 @@ import { Schema, model, Document, Types } from "mongoose";
 export interface IPost extends Document {
   postType: "found" | "lost";
   author: Types.ObjectId;
-  location: string;
+  lat: string;
+  lon: string;
   content: string;
   comments: Types.Array<Types.ObjectId>;
   likes: Types.Array<Types.ObjectId>;
@@ -20,7 +21,11 @@ const PostSchema = new Schema(
       type: Types.ObjectId,
       ref: "User",
     },
-    location: {
+    lat: {
+      type: String,
+      required: true,
+    },
+    lon: {
       type: String,
       required: true,
     },
