@@ -30,9 +30,13 @@ export const PostType = new GraphQLObjectType({
       type: UserType,
       resolve: async ({ author }) => await User.findOne({ _id: author }),
     },
-    location: {
+    lat: {
       type: GraphQLString,
-      resolve: ({ location }) => location,
+      resolve: ({ lat }) => lat,
+    },
+    lon: {
+      type: GraphQLString,
+      resolve: ({ lon }) => lon,
     },
     content: {
       type: GraphQLString,
