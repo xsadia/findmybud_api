@@ -10,7 +10,7 @@ import { nodeInterface } from "../node/nodeDefinition";
 import { UserConnection, UserType } from "../user/UserType";
 
 export const PostTypeEnum = new GraphQLEnumType({
-  name: "post types",
+  name: "PostTypeEnum",
   values: {
     FOUND: { value: "found" },
     LOST: { value: "lost" },
