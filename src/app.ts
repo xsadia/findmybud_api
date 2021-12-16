@@ -8,6 +8,7 @@ import { graphqlHTTP } from "koa-graphql";
 import { userRouter } from "./routes/userRoutes";
 import { postRouter } from "./routes/postRoutes";
 import { schema } from "./graphql/schema";
+import { graphqlEnsureAuthenticated } from "./middlewares/graphqlEnsureAuthenticated";
 
 const app = new Koa();
 const router = new Router();
@@ -44,6 +45,7 @@ const graphqlServer = graphqlHTTP(graphqlSettingsPerReq);
 router.all("/graphql", graphqlServer);
 router.all("/graphql/playground", koaPlayground({ endpoint: "/graphql" }));
 
+app.use(graphqlEnsureAuthenticated);
 app.use(bodyParser());
 app.use(convert(cors()));
 
