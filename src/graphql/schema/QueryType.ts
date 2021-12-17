@@ -26,27 +26,30 @@ export const QueryType = new GraphQLObjectType({
         return connectionFromArray(users, args);
       },
     },
-    userById: {
+    me: {
       type: UserType,
-      args: {
-        id: {
-          type: new GraphQLNonNull(GraphQLString),
-        },
-      },
-      resolve: async (root, args, ctx): Promise<IUser | null> => {
-        const { id } = fromGlobalId(args.id);
-        const user = await User.findOne({ _id: id });
-        if (!user) {
+      resolve: async (root, args, { user }): Promise<IUser | null> => {
+        if (!user.id) {
           return null;
         }
-        return user;
+
+        const me = await User.findOne({ _id: user.id });
+
+        if (!me) {
+          return null;
+        }
+        return me;
       },
     },
-    posts: {
+    userPosts: {
       type: PostConnection,
       args: connectionArgs,
-      resolve: async (root, args, ctx) => {
-        const posts = await Post.find();
+      resolve: async (root, args, { user }) => {
+        if (!user.id) {
+          return null;
+        }
+
+        const posts = await Post.find({ author: user.id }).sort("-createdAt");
 
         return connectionFromArray(posts, args);
       },
