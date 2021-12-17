@@ -1,6 +1,13 @@
 import { GraphQLObjectType, GraphQLString } from "graphql";
-import { connectionDefinitions, globalIdField } from "graphql-relay";
+import {
+  connectionArgs,
+  connectionDefinitions,
+  connectionFromArray,
+  globalIdField,
+} from "graphql-relay";
+import { Post } from "../../models/Post";
 import { nodeInterface } from "../node/nodeDefinition";
+import { PostConnection } from "../post/PostType";
 
 export const UserType = new GraphQLObjectType({
   name: "User",
@@ -22,6 +29,15 @@ export const UserType = new GraphQLObjectType({
     bio: {
       type: GraphQLString,
       resolve: ({ bio }) => bio,
+    },
+    posts: {
+      type: PostConnection,
+      args: connectionArgs,
+      resolve: async (user, args, ctx) => {
+        const posts = await Post.find({ author: user.id }).sort("-createdAt");
+
+        return connectionFromArray(posts, args);
+      },
     },
     refreshToken: {
       type: GraphQLString,
