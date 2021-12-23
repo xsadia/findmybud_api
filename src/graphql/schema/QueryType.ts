@@ -13,9 +13,9 @@ export const QueryType = new GraphQLObjectType({
   name: "Query",
   description: "Root of all queries",
   fields: () => ({
-    health: {
+    version: {
       type: GraphQLString,
-      resolve: () => "Healthy",
+      resolve: () => "v1.0.0",
     },
     users: {
       type: UserConnection,
@@ -41,15 +41,26 @@ export const QueryType = new GraphQLObjectType({
         return me;
       },
     },
-    userPosts: {
+    posts: {
       type: PostConnection,
       args: connectionArgs,
-      resolve: async (root, args, { user }) => {
-        if (!user.id) {
-          return null;
-        }
+      resolve: async (root, args, ctx) => {
+        const posts = await Post.find().sort({ createdAt: -1 });
 
-        const posts = await Post.find({ author: user.id }).sort("-createdAt");
+        return connectionFromArray(posts, args);
+      },
+    },
+    userPosts: {
+      type: PostConnection,
+      args: {
+        ...connectionArgs,
+        userId: {
+          type: new GraphQLNonNull(GraphQLString),
+        },
+      },
+      resolve: async (root, { userId, ...args }, ctx) => {
+        const { id } = fromGlobalId(userId);
+        const posts = await Post.find({ author: id }).sort({ createdAt: -1 });
 
         return connectionFromArray(posts, args);
       },
